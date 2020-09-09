@@ -30,7 +30,7 @@ Date.now()
 
 const make = (str, obj) => {
   const company = {
-    name: str, state: 'moderating', createdAt: Date(), ...obj,
+    name: str, state: 'moderating', createdAt: Date.now(), ...obj,
   };
   return company;
 };

@@ -1,0 +1,37 @@
+objects.js
+Реализуйте и экспортируйте по умолчанию функцию, которая создает объект компании и возвращает его. Для создания компании обязательно только одно свойство – имя компании. Остальные свойства добавляются только если они есть. Параметры:
+
+Имя
+Объект с дополнительными свойствами
+Также у компаний есть два свойства со значениями по умолчанию:
+
+state – moderating
+createdAt – текущая дата
+import make from '../objects.js';
+
+const company = make('Hexlet');
+// {
+//   name: 'Helxet',
+//   state: 'moderating',
+//   createAt: <тут текущая дата>
+// }
+
+const company = make('Hexlet', { website: 'hexlet.io', state: 'published' });
+// {
+//   name: 'Helxet',
+//   website: 'hexlet.io',
+//   state: 'published',
+//   createAt: <тут текущая дата>
+// }
+Используйте спред-оператор для слияния данных внутри и возврата нового объекта.
+
+Подсказки
+Date.now()
+
+const make = (str, obj) => {
+  const company = {
+    name: str, state: 'moderating', createdAt: Date.now(), ...obj,
+  };
+  return company;
+};
+export default make;

@@ -1,0 +1,136 @@
+Для записи цифр римляне использовали буквы латинского алфафита: I, V, X, L, C, D, M. Например:
+
+1 обозначалась с помощью буквы I
+10 с помощью Х
+7 с помощью VII
+Число 2020 в римской записи — это MMXX (2000 = MM, 20 = XX).
+
+solution.js
+Реализуйте и экспортируйте функцию toRoman(), которая переводит арабские числа в римские. Функция принимает на вход целое число в диапазоне от 1 до 3000, а возвращает строку с римским представлением этого числа.
+
+Реализуйте и экспортируйте функцию toArabic(), которая переводит число в римской записи в число, записанное арабскими цифрами. Если переданное римское число не корректно, то функция должна вернуть значение false.
+
+Примеры
+toRoman(1);
+// 'I'
+toRoman(59);
+// 'LIX'
+toRoman(3000);
+// 'MMM'
+
+toArabic('I');
+// 1
+toArabic('LIX');
+// 59
+toArabic('MMM');
+// 3000
+
+toArabic('IIII');
+// false
+toArabic('VX');
+// false
+Подсказки
+Подробнее о римской записи — https://ru.wikipedia.org/wiki/Римские_цифры
+
+
+import _ from 'lodash';
+// BEGIN (write your solution here)
+const numbersOF = {
+  1: 'I',
+  5: 'V',
+  10: 'X',
+  50: 'L',
+  100: 'C',
+  500: 'D',
+  1000: 'M',
+  4: 'IV',
+  9: 'IX',
+  40: 'XL',
+  90: 'XC',
+  400: 'CD',
+  900: 'CM',
+};
+
+const toRoman = (num) => {
+  const arrOfNum = [];
+  const keys = Object.keys(numbersOF);
+  const result = [];
+  if (_.has(numbersOF, num)) {
+    for (const key of keys) {
+      const keyNum = parseInt(key, 10);
+      if (keyNum === num) {
+        return numbersOF[key];
+      }
+    }
+  } else {
+    const maxKey = [];
+    for (const key of keys) {
+      const keyNum = parseInt(key, 10);
+      if (keyNum < num) {
+        maxKey.push(keyNum);
+      }
+    }
+    let res = 0;
+    const mines = (arr, n) => {
+      if (arr.length !== 0) {
+        const lastNum = _.last(arr);
+        if (lastNum <= n) {
+          res = n - lastNum;
+          arrOfNum.push(lastNum);
+          mines(arr, res);
+        }
+        arr.pop();
+        mines(arr, res);
+      }
+    };
+    mines(maxKey, num);
+    for (const n of arrOfNum) {
+      for (const key of keys) {
+        const keyNum = parseInt(key, 10);
+        if (keyNum === n) {
+          result.push(numbersOF[key]);
+        }
+      }
+    }
+  }
+  return result.join('');
+};
+
+const toArabic = (str) => {
+  const arrElement = str.split('');
+  const keys = Object.keys(numbersOF);
+  const itog = [];
+  for (const element of arrElement) {
+    for (const key of keys) {
+      if (numbersOF[key] === element) {
+        itog.push(parseInt(key, 10));
+      }
+    }
+  }
+  const newArrElement = [];
+  let result = _.head(itog);
+  for (let i = 0; i < itog.length; i += 1) {
+    if (result >= itog[i]) {
+      newArrElement.push(itog[i]);
+      result = itog[i];
+    } else {
+      const index = newArrElement.indexOf(_.last(newArrElement));
+      newArrElement.splice(index, 1, itog[i] - result);
+    }
+  }
+  let number = 0;
+  for (const item of newArrElement) {
+    number += item;
+  }
+  for (const key of keys) {
+    const keyNum = parseInt(key, 10);
+    if (number === keyNum) {
+      if (str !== numbersOF[key]) {
+        return false;
+      }
+    }
+  }
+  return number;
+};
+
+export { toRoman, toArabic };
